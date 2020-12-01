@@ -94,8 +94,8 @@ def part_2(data):
 if __name__ == "__main__":
     with open("Day_01/input.txt", "r") as in_file:
         data = format_data(in_file)
-
         tic = time.perf_counter()
+        data.sort()
         answer1 = part_1(data)
         toc = time.perf_counter()
 
