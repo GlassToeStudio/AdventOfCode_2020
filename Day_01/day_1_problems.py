@@ -1,3 +1,7 @@
+
+import time
+
+
 '''
 --- Day 1: Report Repair ---
 After saving Christmas five years in a row, you've decided to take a vacation
@@ -58,8 +62,6 @@ In your expense report, what is the product of the three entries that sum to
 '''
 
 
-import time
-
 def format_data(data):
     return [int(x) for x in data.read().split('\n')]
 
@@ -102,7 +104,7 @@ if __name__ == "__main__":
 
         print("The product of the two digits that sum to 2020 is", answer1)
         print("The product of the two digits that sum to 2020 is", answer2)
-        
+
         print(f"First part takes: {toc - tic:0.4f}")
         print(f"Second part takes: {tac - tic:0.4f}")
 
