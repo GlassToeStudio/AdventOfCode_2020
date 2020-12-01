@@ -56,6 +56,8 @@ In your expense report, what is the product of the three entries that sum to
 '''
 
 
+import time
+
 def format_data(data):
     return [int(x) for x in data.read().split('\n')]
 
@@ -93,8 +95,12 @@ if __name__ == "__main__":
     with open("Day_01/input.txt", "r") as in_file:
         data = format_data(in_file)
 
-        answer = part_1(data)
-        print("The product of the two digits that sum to 2020 is", answer)
-
-        answer = part_2(data)
-        print("The product of the two digits that sum to 2020 is", answer)
+        tic = time.perf_counter()
+        answer1 = part_1(data)
+        toc = time.perf_counter()
+        answer2 = part_2(data)
+        tac = time.perf_counter()
+        print("The product of the two digits that sum to 2020 is", answer1)
+        print("The product of the two digits that sum to 2020 is", answer2)
+        print(f"First part takes: {toc - tic:0.4f}")
+        print(f"Second part takes: {tac - tic:0.4f}")
