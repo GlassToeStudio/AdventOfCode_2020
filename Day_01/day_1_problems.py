@@ -53,6 +53,8 @@ and 675. Multiplying them together produces the answer, 241861950.
 
 In your expense report, what is the product of the three entries that sum to
 2020?
+
+* The product of the two digits that sum to 2020 is 12747392
 '''
 
 
@@ -67,26 +69,22 @@ def is_2020(a, b):
 
 
 def part_1(data):
+    i = 0
     for a in data:
-        for b in data:
-            if a == b:
-                continue
+        i += 1
+        for b in data[i:]:
             if is_2020(a, b):
                 return a*b
 
 
 def part_2(data):
+    i = 0
     for a in data:
-        for b in data:
-            if a == b:
-                continue
+        i += 1
+        for b in data[i:]:
             if a+b > 2020:
                 continue
-            for c in data:
-                if a == c:
-                    continue
-                if b == c:
-                    continue
+            for c in data[i+1:]:
                 if is_2020(a+b, c):
                     return a*b*c
 
@@ -98,9 +96,23 @@ if __name__ == "__main__":
         tic = time.perf_counter()
         answer1 = part_1(data)
         toc = time.perf_counter()
+
         answer2 = part_2(data)
         tac = time.perf_counter()
+
         print("The product of the two digits that sum to 2020 is", answer1)
         print("The product of the two digits that sum to 2020 is", answer2)
+        
         print(f"First part takes: {toc - tic:0.4f}")
         print(f"Second part takes: {tac - tic:0.4f}")
+
+
+'''
+first pass
+First part takes: 0.0062
+Second part takes: 0.0949
+
+second pass
+First part takes: 0.0012
+Second part takes: 0.0175
+'''
