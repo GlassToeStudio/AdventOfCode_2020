@@ -56,8 +56,24 @@ Here are some other boarding passes:
 
 As a sanity check, look through your list of boarding passes. What is the
 highest seat ID on a boarding pass?
+
+* 976
 """
 
+
+"""
+Ding! The "fasten seat belt" signs have turned on. Time to find your seat.
+
+It's a completely full flight, so your seat should be the only missing
+boarding pass in your list. However, there's a catch: some of the seats at the
+very front and back of the plane don't exist on this aircraft, so they'll be
+missing from your list as well.
+
+Your seat wasn't at the very front or back, though; the seats with IDs
++1 and -1 from yours will be in your list.
+
+What is the ID of your seat?
+"""
 
 # BFFFBBF RRR
 # F lower half row
@@ -68,7 +84,7 @@ highest seat ID on a boarding pass?
 
 seat_rows = [x for x in range(128)]
 seat_columns = [x for x in range(8)]
-
+all_seats = [x for x in range(128*8)]
 
 def format_data(data):
     return [x for x in data.read().split('\n')]
@@ -82,20 +98,20 @@ def find_seat(bp):
     for row in rows:
         if row == 'F':
             seat_r = seat_r[:int(-len(seat_r)/2)]
-            print(row, seat_r)
+            # print(row, seat_r)
         else:
             seat_r = seat_r[int(-len(seat_r)/2):]
-            print(row, seat_r)
+            # print(row, seat_r)
     row = seat_r[0]
     for column in columns:
         if column == 'L':
             seat_c = seat_c[:int(-len(seat_c)/2)]
-            print(column, seat_c)
+            # print(column, seat_c)
         else:
             seat_c = seat_c[int(-len(seat_c)/2):]
-            print(column, seat_c)
+            # print(column, seat_c)
     column = seat_c[0]
-    print(row, column)
+    # print(row, column)
     return(row, column)
 
 
@@ -103,14 +119,27 @@ def seat_id(row, column):
     return row * 8 + column
 
 
+def check_seat_list(seat):
+    pass
+
 if __name__ == "__main__":
+    missing_seats = []
+    seats = []
     with open("Day_05/input.txt", "r") as in_file:
         data = format_data(in_file)
         ans = 0
-        print(data)
+        # print(data)
         for bp in data:
             seat_r, seat_c = find_seat(bp)
             seat = seat_id(seat_r, seat_c)
+            seats.append(seat)
             if seat > ans:
                 ans = seat
-            print(ans)
+        print(f"Part 1: {ans}")
+        for seat in all_seats:
+            if seat not in seats:
+                missing_seats.append(seat)
+        for seat in missing_seats:
+            if seat + 1 not in missing_seats and seat - 1 not in missing_seats:
+                print(seat)
+
