@@ -35,3 +35,6 @@ if __name__ == "__main__":
 
     fi = open(f"Day_{day}/{filename}.txt", 'w')
     print(data, file=fi)
+    py = open(f"Day_{day}/day_{sys.argv[1]}_problems.py", 'w')
+    s = '"""'
+    print(f"{s}\n{s}", file=py)
