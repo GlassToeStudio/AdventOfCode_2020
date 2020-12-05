@@ -134,3 +134,28 @@ cid (Country ID) - ignored, missing or not.
 ```
 </p>
 </details>
+
+
+<details>
+<summary><b>Day 5: Binary Boarding</b></summary>
+<p>
+Day 5 provides a list of instructions for calculating a row, column and seat id for a given line of input. The isntructions state to perform somehwat of a binay search, in that one must continuously take either the upper or lower half of some range until a single value is left. Do this for the first 7 characters of the input, then again for the last 3 characters. The two values are then used to calculate a seat id. Once all seat ids are found, locate the seat id that is missing from the others. 
+
+```py
+BFFFBBFRRR
+
+def get_seat_id(row, column):
+    return row * 8 + column
+```
+
+### Part 1:
+For every line of input, split out the firswt 7 and last 3 characters. Based on each value, take either the upper or lower half of a given range (128 and 8, respectivly). Take these two values and calculate a seat id.
+
+### Part 2:
+For every seat id, find which one is missing from the total range of seat ids (128 * 8). However, not all seat ids are actually available, so to find the missing seat, find also that its neighbors (+1 and -1) are not missing. 
+
+```py
+if seat + 1 not in missing_seats and seat - 1 not in missing_seats:
+``` 
+</p>
+</details>
