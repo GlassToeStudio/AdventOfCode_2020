@@ -73,24 +73,18 @@ Your seat wasn't at the very front or back, though; the seats with IDs
 +1 and -1 from yours will be in your list.
 
 What is the ID of your seat?
+
+* 685
 """
 
-# BFFFBBF RRR
-# F lower half row
-# B upper half row
-# L lower half column
-# R upper half column
-
-
-seat_rows = [x for x in range(128)]
-seat_columns = [x for x in range(8)]
-all_seats = [x for x in range(128*8)]
 
 def format_data(data):
     return [x for x in data.read().split('\n')]
 
 
-def find_seat(bp):
+def get_seat_r_c(bp):
+    seat_rows = [x for x in range(128)]
+    seat_columns = [x for x in range(8)]
     rows = bp[:-3]
     columns = bp[-3:]
     seat_r = [x for x in seat_rows]
@@ -98,48 +92,43 @@ def find_seat(bp):
     for row in rows:
         if row == 'F':
             seat_r = seat_r[:int(-len(seat_r)/2)]
-            # print(row, seat_r)
         else:
             seat_r = seat_r[int(-len(seat_r)/2):]
-            # print(row, seat_r)
     row = seat_r[0]
     for column in columns:
         if column == 'L':
             seat_c = seat_c[:int(-len(seat_c)/2)]
-            # print(column, seat_c)
         else:
             seat_c = seat_c[int(-len(seat_c)/2):]
-            # print(column, seat_c)
     column = seat_c[0]
-    # print(row, column)
     return(row, column)
 
 
-def seat_id(row, column):
+def get_seat_id(row, column):
     return row * 8 + column
 
 
-def check_seat_list(seat):
-    pass
+def find_missing_seat(seats):
+    all_seats = [x for x in range(128*8)]
+    missing_seats = []
+    for seat in all_seats:
+        if seat not in seats:
+            missing_seats.append(seat)
+    for seat in missing_seats:
+        if seat + 1 not in missing_seats and seat - 1 not in missing_seats:
+            return seat
+
 
 if __name__ == "__main__":
-    missing_seats = []
     seats = []
+    ans_p1 = 0
     with open("Day_05/input.txt", "r") as in_file:
         data = format_data(in_file)
-        ans = 0
-        # print(data)
         for bp in data:
-            seat_r, seat_c = find_seat(bp)
-            seat = seat_id(seat_r, seat_c)
-            seats.append(seat)
-            if seat > ans:
-                ans = seat
-        print(f"Part 1: {ans}")
-        for seat in all_seats:
-            if seat not in seats:
-                missing_seats.append(seat)
-        for seat in missing_seats:
-            if seat + 1 not in missing_seats and seat - 1 not in missing_seats:
-                print(seat)
-
+            seat_r, seat_c = get_seat_r_c(bp)
+            seat_id = get_seat_id(seat_r, seat_c)
+            seats.append(seat_id)
+            if seat_id > ans_p1:
+                ans_p1 = seat_id
+        print(f"Part 1: {ans_p1}")
+        print(f"Part 2: {find_missing_seat(seats)}")
