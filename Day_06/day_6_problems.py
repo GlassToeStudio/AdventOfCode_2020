@@ -59,6 +59,8 @@ In this example, the sum of these counts is 3 + 3 + 3 + 1 + 1 = 11.
 
 For each group, count the number of questions to which anyone answered "yes".
 What is the sum of those counts?
+
+* Part 1: 6583
 """
 
 
@@ -103,30 +105,17 @@ In this example, the sum of these counts is 3 + 0 + 1 + 1 + 1 = 6.
 
 For each group, count the number of questions to which everyone answered "yes".
 What is the sum of those counts?
+
+* Part 2: 3290
 """
 
 
 def format_data_1(data):
-    yeses = sum(
-        [len(set(x.replace('\n', ''))) for x in data.read().split('\n\n')]
-        )
-    return yeses
+    return sum([len(set(x.replace('\n', ''))) for x in data.read().split('\n\n')])
 
 
 def format_data_2(data):
-    groups = [
-        [len(x.split('\n')), x.replace('\n', ''),
-            set(x.replace('\n', ''))]for x in data.read().split('\n\n')
-        ]
-    return groups
-
-
-def find_all_yesses(data):
-    sum = 0
-    for people, answers, sets in groups:
-        for answer in sets:
-            sum += 1 if answers.count(answer) == people else 0
-    return (sum)
+    return sum([len(set(x.split()[0]).intersection(*x.split())) for x in data.read().split('\n\n')])
 
 
 if __name__ == "__main__":
@@ -134,5 +123,4 @@ if __name__ == "__main__":
         print(f"Part 1: {format_data_1(in_file)}")
 
     with open("Day_06/input.txt", "r") as in_file:
-        groups = format_data_2(in_file)
-        print(f"Part 2: {find_all_yesses(groups)}")
+        print(f"Part 2: {format_data_2(in_file)}")
