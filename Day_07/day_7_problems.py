@@ -125,5 +125,5 @@ def count_bags_in_gold_bag(name, bags, total, amount):
 if __name__ == "__main__":
     with open("Day_07/input.txt", "r") as in_file:
         bags = format_data(in_file)
-        print(f"Part 1: {len(bags_with_gold_bags(bags, name, {}))-1}")
+        print(f"Part 1: {len(bags_with_gold_bags(bags, 'shiny gold bag', {}))-1}")
         print(f"Part 2: {count_bags_in_gold_bag('shiny gold bag', bags, 0, 1)}")
