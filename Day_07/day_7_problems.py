@@ -102,28 +102,26 @@ def format_data(data):
     return map
 
 
-def bags_with_gold_bags(bags, name, found):
+def count_containers(bags, name, seen):
     for bag in bags:
         if bag == name:
-            found[bag] = bags[bag]
-        for rules in bags[bag]:
-            if rules == name:
-                if bag not in found:
-                    found[bag] = bags[bag][rules]
-                    found = bags_with_gold_bags(bags, bag, found)
-    return found
+            seen[bag] = bags[bag]
+        for contents in bags[bag]:
+            if contents == name:
+                if bag not in seen:
+                    seen[bag] = bags[bag][contents]
+                    seen = count_containers(bags, bag, seen)
+    return seen
 
 
-def count_bags_in_gold_bag(name, bags, total, amount):
-    if name in bags:
-        for bag in bags[name]:
-            total += amount*bags[name][bag]
-            total = count_bags_in_gold_bag(bag, bags, total, amount*bags[name][bag])
+def count_contents(bag, bags, total, n):
+    for b in bags.get(bag, []):
+        total = count_contents(b, bags, total, n * bags[bag][b]) + n * bags[bag][b]
     return total
 
 
 if __name__ == "__main__":
     with open("Day_07/input.txt", "r") as in_file:
         bags = format_data(in_file)
-        print(f"Part 1: {len(bags_with_gold_bags(bags, 'shiny gold bag', {}))-1}")
-        print(f"Part 2: {count_bags_in_gold_bag('shiny gold bag', bags, 0, 1)}")
+        print(f"Part 1: {len(count_containers(bags, 'shiny gold bag', {}))-1}")
+        print(f"Part 2: {count_contents('shiny gold bag', bags, 0, 1)}")
