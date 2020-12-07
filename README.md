@@ -189,5 +189,18 @@ For every groups of answers, find ANY response of yes. (Union).
 
 ### Part 2:
 For every group of answers, find responses where ALL answered yes. (Intersection)
+
+
+### Created some visuals of the data
+#### Part 1
+<p align="center">
+<img src="https://github.com/GlassToeStudio/AdventOfCode_2020/blob/master/Day_06/day_6_part_1.PNG" width="100%" height="100%"
+</p>
+
+#### Part 2
+<p align="center">
+<img src="https://github.com/GlassToeStudio/AdventOfCode_2020/blob/master/Day_06/day_6_part_2.PNG" width="100%" height="100%"
+</p>
+
 </p>
 </details>
