@@ -21,7 +21,7 @@ For every entry in the list, compare it with every other entry until once pair t
 ### Part 2:
 Same as part 1 but check every triplet in the same manner as before.
 
-Added in some early outs in case there was no chance of a solution for any partivular pair. Additionally, the data was sorted in ascending order to speed up operations. 
+Added in some early outs in case there was no chance of a solution for any particular pair. Additionally, the data was sorted in ascending order to speed up operations. 
 </p>
 </details>
 
@@ -29,7 +29,7 @@ Added in some early outs in case there was no chance of a solution for any parti
 <details>
 <summary><b>Day 2: Password Philosophy</b></summary>
 <p>
-Day 2 provides a list of passwords along with some criteria for validity. Where you are given two numbers and one character. The numbers being the min and max occurances for the given char in the respective password.
+Day 2 provides a list of passwords along with some criteria for validity. Where you are given two numbers and one character. The numbers being the min and max occurrences for the given char in the respective password.
 
 ```
 1-3 a: abcde
@@ -38,12 +38,12 @@ Day 2 provides a list of passwords along with some criteria for validity. Where 
 ```
 
 ### Part 1:
-Parse the data to extract the min, max, and special char and the password. Check the occurances of the char in the password and verify it is within the min and max allowed.
+Parse the data to extract the min, max, and special char and the password. Check the occurrences of the char in the password and verify it is within the min and max allowed.
 
 ### Part 2:
-The rules change such that the numbers are now indeces of where the char can occur in the password, but it can only occur in one of the two indeces to be valid. For a little extra challenge, the numbers are not 0 based as is typical in programming languages. Check each index for the char and return a valid result only if one occurs.
+The rules change such that the numbers are now indices of where the char can occur in the password, but it can only occur in one of the two indices to be valid. For a little extra challenge, the numbers are not 0 based as is typical in programming languages. Check each index for the char and return a valid result only if one occurs.
 
-Added in a regex vcersion as well as built-in methods to solve.
+Added in a regex version as well as built-in methods to solve.
 </p>
 </details>
 
@@ -84,7 +84,7 @@ Given a number of slopes,[(1, 1), (3, 1), (5, 1), (7, 1), (1, 2)] calculate the 
 <details>
 <summary><b>Day 4: Passport Processing</b></summary>
 <p>
-Day 4 number of key:value pairs for a given set of passport data all separated by a blank line. One must parse the data and check that the required feilds are present.
+Day 4 number of key:value pairs for a given set of passport data all separated by a blank line. One must parse the data and check that the required fields are present.
 
 ```
 ecl:gry pid:860033327 eyr:2020 hcl:#fffffd
@@ -115,10 +115,10 @@ cid (Country ID)
 ```
 
 ### Part 1:
-Break down the data in seperate passports then break out each key:value pair of feilds. Check that the required felds are present and count the total number of valid passports.
+Break down the data in separate passports then break out each key:value pair of fields. Check that the required fields are present and count the total number of valid passports.
 
 ### Part 2:
-Each feild now required some data validation. Check each feild agains its respective criteria and find the total number of valid passports.
+Each field now required some data validation. Check each field against its respective criteria and find the total number of valid passports.
 
 ```
 byr (Birth Year) - four digits; at least 1920 and at most 2002.
@@ -129,7 +129,7 @@ If cm, the number must be at least 150 and at most 193.
 If in, the number must be at least 59 and at most 76.
 hcl (Hair Color) - a # followed by exactly six characters 0-9 or a-f.
 ecl (Eye Color) - exactly one of: amb blu brn gry grn hzl oth.
-pid (Passport ID) - a nine-digit number, including leading zeroes.
+pid (Passport ID) - a nine-digit number, including leading zeros.
 cid (Country ID) - ignored, missing or not.
 ```
 </p>
@@ -139,7 +139,7 @@ cid (Country ID) - ignored, missing or not.
 <details>
 <summary><b>Day 5: Binary Boarding</b></summary>
 <p>
-Day 5 provides a list of instructions for calculating a row, column and seat id for a given line of input. The isntructions state to perform somehwat of a binay search, in that one must continuously take either the upper or lower half of some range until a single value is left. Do this for the first 7 characters of the input, then again for the last 3 characters. The two values are then used to calculate a seat id. Once all seat ids are found, locate the seat id that is missing from the others. 
+Day 5 provides a list of instructions for calculating a row, column and seat id for a given line of input. The instructions state to perform somewhat of a binary search, in that one must continuously take either the upper or lower half of some range until a single value is left. Do this for the first 7 characters of the input, then again for the last 3 characters. The two values are then used to calculate a seat id. Once all seat ids are found, locate the seat id that is missing from the others. 
 
 ```py
 BFFFBBFRRR
@@ -149,7 +149,7 @@ def get_seat_id(row, column):
 ```
 
 ### Part 1:
-For every line of input, split out the firswt 7 and last 3 characters. Based on each value, take either the upper or lower half of a given range (128 and 8, respectivly). Take these two values and calculate a seat id.
+For every line of input, split out the first 7 and last 3 characters. Based on each value, take either the upper or lower half of a given range (128 and 8, respectively). Take these two values and calculate a seat id.
 
 ### Part 2:
 For every seat id, find which one is missing from the total range of seat ids (128 * 8). However, not all seat ids are actually available, so to find the missing seat, find also that its neighbors (+1 and -1) are not missing. 
@@ -188,6 +188,6 @@ b
 For every groups of answers, find ANY response of yes. (Union). 
 
 ### Part 2:
-For every group of ansers, find responses where ALL ansered yes. (Intersection)
+For every group of answers, find responses where ALL answered yes. (Intersection)
 </p>
 </details>
