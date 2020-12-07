@@ -164,7 +164,7 @@ if seat + 1 not in missing_seats and seat - 1 not in missing_seats:
 <details>
 <summary><b>Day 6: Custom Customs</b></summary>
 <p>
-Day 1 provides a list of groups of answers, each answer being a letter of the alphabet noting a answer of yes for one of 26 questions.
+Day 6 provides a list of groups of answers, each answer being a letter of the alphabet noting a answer of yes for one of 26 questions.
 
 ```
 abc
