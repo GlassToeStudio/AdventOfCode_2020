@@ -1,3 +1,5 @@
+from copy import deepcopy
+
 """
 --- Day 8: Handheld Halting ---
 Your flight to the major airline hub reaches cruising altitude without
@@ -125,50 +127,87 @@ terminates?
 """
 
 
+class Computer:
+    def __init__(self, instructions):
+        self.address = 0
+        self.accumulator = 0
+        self.previous_address = -1
+        self.instructions = instructions
+        self.prev_addresses = []
+        self.operations = {
+            'acc': self.do_acc,
+            'jmp': self.do_jmp,
+            'nop': self.do_nop
+        }
+
+    def do_acc(self, amount):
+        self.accumulator += amount
+        self.address += 1
+        pass
+
+    def do_jmp(self, amount):
+        self.address += amount
+        pass
+
+    def do_nop(self, amount):
+        self.address += 1
+        pass
+
+    def run(self):
+        while self.address < (len(self.instructions)):
+            op = self.instructions[self.address][0]
+            amt = self.instructions[self.address][1]
+            self.operations[op](amt)
+            if self.address in self.prev_addresses:
+                return -1, self.accumulator
+            self.prev_addresses.append(self.address)
+        return 0, self.accumulator
+
+
 def format_data(data):
     instructions = [[x[:3], int(x[3:])] for x in data.read().replace('+', '').split('\n')]
     return instructions
 
 
-def do_acc(amount):
-    accumulator[0] += amount
-    address[0] += 1
-    pass
+def print_data(data):
+    for d in data:
+        print(d)
 
 
-def do_jmp(amount):
-    address[0] += amount
-    pass
-
-
-def do_nop(amount):
-    address[0] += 1
-    pass
-
-
-operations = {
-    'acc': do_acc,
-    'jmp': do_jmp,
-    'nop': do_nop
-}
-
-accumulator = [0]
-address = [0]
-prev_addresses = []
-
-
-def run_computer(instructions):
-    while address[0] < (len(instructions)):
-        op = instructions[address[0]][0]
-        amt = instructions[address[0]][1]
-        operations[op](amt)
-        if address[0] in prev_addresses:
-            return f"Part 1: {accumulator[0]}"
-        prev_addresses.append(address[0])
-    
+def get_data_copy(data):
+    return deepcopy(data)
 
 
 if __name__ == "__main__":
     with open("Day_08/input.txt", "r") as in_file:
-        data = format_data(in_file)
-        print(run_computer(data))
+        instructions = format_data(in_file)
+        d = get_data_copy(instructions)
+        try_nops = True
+        try_jmps = True
+        computer = Computer(d)
+        code, amt = computer.run()
+        if code == -1:
+            print(f"Part 1: {amt}")
+
+        # wanted to wait until a failure to edit the jmp or nop, this was easier
+        if try_jmps:
+            jmps = [i for i, x in enumerate(instructions) if x[0] == 'jmp']
+            for jmp in jmps:
+                d = get_data_copy(instructions)
+                d[jmp][0] = 'nop'
+                computer = Computer(d)
+                code, amt = computer.run()
+                if code == 0:
+                    print(f"Part 2: {amt} - jmps")
+                    try_nops = False
+        # No need for this but I thought it best to account for both posibilities
+        if try_nops:
+            nops = [i for i, x in enumerate(instructions) if x[0] == 'nop']
+            for nop in nops:
+                d = get_data_copy(instructions)
+                d[nop][0] = 'jmp'
+                computer = Computer(d)
+                code, amt = computer.run()
+                if code == 0:
+                    print(f"Part 2: {amt} - nops")
+                    try_nops = False
