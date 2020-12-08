@@ -127,37 +127,54 @@ terminates?
 """
 
 
+class Operation:
+    def __init__(self, op, fn):
+        self.op = op
+        self.fn = fn
+
+    def execute(self, amt):
+        return self.fn(amt)
+
+
 class Computer:
     def __init__(self, instructions):
         self.address = 0
-        self.accumulator = 0
-        self.previous_address = -1
-        self.instructions = instructions
         self.prev_addresses = []
+        self.accumulator = 0
+        self.instructions = instructions
+        self.acc_instruction = Operation('acc', self.do_acc)
+        self.jmp_instruction = Operation('jmp', self.do_jmp)
+        self.nop_instruction = Operation('nop', self.do_nop)
         self.operations = {
-            'acc': self.do_acc,
-            'jmp': self.do_jmp,
-            'nop': self.do_nop
+            'acc': self.acc_instruction,
+            'jmp': self.jmp_instruction,
+            'nop': self.nop_instruction
         }
 
-    def do_acc(self, amount):
-        self.accumulator += amount
-        self.address += 1
-        pass
+    def __update_steps__(self, amt):
+        self.address += amt
 
+    def __update_accumulator__(self, amt):
+        self.accumulator += amt
+
+    def do_acc(self, amount):
+        self.__update_steps__(1)
+        self.__update_accumulator__(amount)
+        pass
+ 
     def do_jmp(self, amount):
-        self.address += amount
+        self.__update_steps__(amount)
         pass
 
     def do_nop(self, amount):
-        self.address += 1
+        self.__update_steps__(1)
         pass
 
     def run(self):
         while self.address < (len(self.instructions)):
             op = self.instructions[self.address][0]
             amt = self.instructions[self.address][1]
-            self.operations[op](amt)
+            self.operations[op].execute(amt)
             if self.address in self.prev_addresses:
                 return -1, self.accumulator
             self.prev_addresses.append(self.address)
