@@ -37,4 +37,6 @@ if __name__ == "__main__":
     print(data, file=fi)
     py = open(f"Day_{day}/day_{sys.argv[1]}_problems.py", 'w')
     s = '"""'
-    print(f"{s}\n{s}", file=py)
+    upper = "def format_data(data):\n    return [x.strip() for x in data.readlines()]"
+    lower = f"if __name__ == \"__main__\":\n    with open(\"Day_{day}/input.txt\", \"r\") as in_file:\n        data = format_data(in_file)\n        print(data)"
+    print(f"{s}\n{s}\n\n\n{upper}\n\n\n{lower}", file=py)
