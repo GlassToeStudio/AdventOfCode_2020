@@ -76,28 +76,31 @@ def format_data(data):
     return [int(x.strip()) for x in data.readlines()]
 
 
+def find_value(nums, preamble_length):
+    p_index = 0
+    while p_index + preamble_length < len(nums):
+        t_index = p_index + preamble_length
+        target = nums[t_index]
+        valid = False
+        for a_index in range(p_index, p_index + preamble_length):
+            a = nums[a_index]
+            if valid:
+                break
+            if a >= target:
+                continue
+            for b_index in range(a_index, p_index + preamble_length):
+                b = nums[b_index]
+                if b >= target:
+                    continue
+                if a + b == target:
+                    valid = True
+                    break
+        if not valid:
+            return f"Part 1: {target}"
+        p_index += 1
+
+
 if __name__ == "__main__":
     with open("Day_09/input.txt", "r") as in_file:
-        instructions = format_data(in_file)
-        
-        preamble_length = 25
-        i = 0
-        while i+preamble_length < len(instructions):
-            j = i + preamble_length
-            valid = False
-            target = instructions[j]
-            for x in range(i, i + preamble_length):
-                a = instructions[x]
-                if a >= target:
-                    continue
-                for y in range(x, i + preamble_length):         
-                    b = instructions[y]
-                    if b >= target:
-                        continue
-                    # print(f"{a} + {b} = {target}? : {a + b} - {a + b == target}")
-                    if a + b == target:
-                        valid = True
-            if not valid:
-                print(f"Part 1: {target}")
-                break
-            i += 1
+        numbers = format_data(in_file)
+        print(find_value(numbers, 25))
