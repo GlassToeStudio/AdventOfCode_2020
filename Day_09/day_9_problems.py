@@ -72,6 +72,48 @@ numbers before it. What is the first number that does not have this property?
 """
 
 
+"""
+--- Part Two ---
+The final step in breaking the XMAS encryption relies on the invalid number
+you just found: you must find a contiguous set of at least two numbers in your
+list which sum to the invalid number from step 1.
+
+Again consider the above example:
+
+    35
+    20
+    15
+    25
+    47
+    40
+    62
+    55
+    65
+    95
+    102
+    117
+    150
+    182
+    127
+    219
+    299
+    277
+    309
+    576
+
+In this list, adding up all of the numbers from 15 through 40 produces the
+invalid number from step 1, 127. (Of course, the contiguous set of numbers in
+your actual list might be much longer.)
+
+To find the encryption weakness, add together the smallest and largest number
+in this contiguous range; in this example, these are 15 and 47, producing 62.
+
+What is the encryption weakness in your XMAS-encrypted list of numbers?
+
+* 67587168
+"""
+
+
 def format_data(data):
     return [int(x.strip()) for x in data.readlines()]
 
@@ -84,9 +126,7 @@ def find_value(nums, preamble_length):
         valid = False
         for a_index in range(p_index, p_index + preamble_length):
             a = nums[a_index]
-            if valid:
-                break
-            if a >= target:
+            if a >= target or valid:
                 continue
             for b_index in range(a_index, p_index + preamble_length):
                 b = nums[b_index]
@@ -96,11 +136,27 @@ def find_value(nums, preamble_length):
                     valid = True
                     break
         if not valid:
-            return f"Part 1: {target}"
+            return target
         p_index += 1
+
+
+def find_contiguous_set(numbers, target):
+    queue = []
+    i = 0
+    while i < len(numbers)-1:
+        queue.append(numbers[i])
+        total = sum(queue)
+        if total == target:
+            return min(queue) + max(queue)
+        while sum(queue) + numbers[i+1] > target and len(queue) > 1:
+            queue.pop(0)
+        i += 1
 
 
 if __name__ == "__main__":
     with open("Day_09/input.txt", "r") as in_file:
         numbers = format_data(in_file)
-        print(find_value(numbers, 25))
+        target = find_value(numbers, 25)
+        weakness = find_contiguous_set(numbers, target)
+        print(f"Part 1: {target}")
+        print(f"Part 2: {weakness}")
