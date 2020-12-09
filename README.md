@@ -1,4 +1,4 @@
-# AdventOfCode
+# Advent Of Code 2020
 Advent of Code 2020 https://adventofcode.com/2020
 
 <details>
@@ -201,6 +201,76 @@ For every group of answers, find responses where ALL answered yes. (Intersection
 <p align="center">
 <img src="https://github.com/GlassToeStudio/AdventOfCode_2020/blob/master/Day_06/day_6_part_2.PNG" width="100%" height="100%"
 </p>
+
+</p>
+</details>
+
+
+<details>
+<summary><b>Day 7: Handy Haversacks</b></summary>
+<p>
+Day 7
+
+```
+light red bags contain 1 bright white bag, 2 muted yellow bags.
+dark orange bags contain 3 bright white bags, 4 muted yellow bags.
+bright white bags contain 1 shiny gold bag.
+muted yellow bags contain 2 shiny gold bags, 9 faded blue bags.
+shiny gold bags contain 1 dark olive bag, 2 vibrant plum bags.
+dark olive bags contain 3 faded blue bags, 4 dotted black bags.
+vibrant plum bags contain 5 faded blue bags, 6 dotted black bags.
+faded blue bags contain no other bags.
+dotted black bags contain no other bags.
+```
+
+### Part 1:
+ 
+### Part 2:
+
+
+</p>
+</details>
+
+
+<details>
+<summary><b>Day 8: Handheld Halting</b></summary>
+<p>
+Day 8 - our first VM
+
+```
+```
+
+### Part 1:
+For every groups of answers, find ANY response of yes. (Union). 
+
+### Part 2:
+
+### Visusal
+<p align="center">
+<img src="https://github.com/GlassToeStudio/AdventOfCode_2020/blob/master/Day_08/AoC_day8_vis.gif" width="100%" height="100%"
+</p>
+
+</p>
+</details>
+
+
+<details>
+<summary><b>Day 9: Encoding Error</b></summary>
+<p>
+Day 9 - Window search
+
+```
+```
+
+### Part 1:
+
+### Part 2:
+
+### Visusal
+<p align="center">
+<img src="https://github.com/GlassToeStudio/AdventOfCode_2020/blob/master/Day_09/AoC_day9_vis.gif" width="100%" height="100%"
+</p>
+
 
 </p>
 </details>
