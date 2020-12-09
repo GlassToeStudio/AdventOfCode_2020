@@ -136,6 +136,14 @@ def clear():
     _ = system('cls')
 
 
+def format_data(data):
+    return [[x[:3], int(x[3:])] for x in data.readlines()]
+
+
+def try_swap_op(op):
+    op[0] = 'jmp' if op[0] == 'nop' else 'nop' if op[0] == 'jmp' else 'acc'
+
+
 class Computer:
     def __init__(self, instructions):
         self.instructions = instructions
@@ -211,43 +219,32 @@ class Computer:
         return self.__passed__()
 
 
-def format_data(data):
-    return [[x[:3], int(x[3:])] for x in data.readlines()]
-
-
-def try_swap_op(op):
-    op[0] = 'jmp' if op[0] == 'nop' else 'nop' if op[0] == 'jmp' else 'acc'
-
-
-GREEN = "\033[0;32;40m"
-YELLOW = "\033[0;33;40m"
-BLUE = "\033[0;34;40m"
-RED = "\033[0;31;40m"
-END = "\033[0m"
-START = "\033[F"
-UP = "\033[A"
-
-
-JMP = f"{BLUE}{'▲'} {END}"
-NOP = f"{RED}{'■'} {END}"
-ACC = f"{GREEN}{'⬤'} {END}"
-CURRENT = f"{YELLOW}{'   '}{END}"
-
-colors = {
-    'jmp': BLUE,
-    'nop': RED,
-    'acc': GREEN
-}
-
-icons = {
-    'jmp': JMP,
-    'nop': NOP,
-    'acc': ACC
-}
-
-
 def print_data(data, address, accumulated):
-    # 591
+    GREEN = "\033[0;32;40m"
+    YELLOW = "\033[0;33;40m"
+    BLUE = "\033[0;34;40m"
+    RED = "\033[0;31;40m"
+    END = "\033[0m"
+    START = "\033[F"
+    UP = "\033[A"
+
+    JMP = f"{BLUE}{'▲'} {END}"
+    NOP = f"{RED}{'■'} {END}"
+    ACC = f"{GREEN}{'⬤'} {END}"
+    CURRENT = f"{YELLOW}{'   '}{END}"
+
+    colors = {
+        'jmp': BLUE,
+        'nop': RED,
+        'acc': GREEN
+    }
+
+    icons = {
+        'jmp': JMP,
+        'nop': NOP,
+        'acc': ACC
+    }
+
     sys.stdout.write(f"{START}{UP*13}")
     s = ''
     k = address-1
@@ -282,6 +279,7 @@ def part_1(instructions):
 
 
 def part_2(instructions):
+    # 247 runs to completion
     for i in range(274, len(instructions)):
         d = deepcopy(instructions)
         try_swap_op(d[i])
