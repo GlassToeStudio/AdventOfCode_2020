@@ -273,7 +273,6 @@ def print_data(data, address, accumulated):
     s += f"Address: {address}\n"
     sys.stdout.write(s)
     sys.stdout.flush()
-    #time.sleep(.1)
 
 
 def part_1(instructions):
@@ -297,7 +296,7 @@ def part_2(instructions):
 
 if __name__ == "__main__":
     clear()
-    with open("D:\PythonFiles\AdventOfCode_2020\Day_08/input.txt", "r") as in_file:
+    with open("Day_08/input.txt", "r") as in_file:
         instructions = format_data(in_file)
         P1 = part_1(instructions)
         P2 = part_2(instructions)
