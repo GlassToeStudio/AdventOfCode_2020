@@ -124,107 +124,110 @@ acc +1, acc +6).
 Fix the program so that it terminates normally by changing exactly one jmp (to
 nop) or nop (to jmp). What is the value of the accumulator after the program
 terminates?
+
+* 1245
 """
-
-
-class Operation:
-    def __init__(self, op, fn):
-        self.op = op
-        self.fn = fn
-
-    def execute(self, amt):
-        return self.fn(amt)
 
 
 class Computer:
     def __init__(self, instructions):
-        self.address = 0
-        self.prev_addresses = []
-        self.accumulator = 0
         self.instructions = instructions
-        self.acc_instruction = Operation('acc', self.do_acc)
-        self.jmp_instruction = Operation('jmp', self.do_jmp)
-        self.nop_instruction = Operation('nop', self.do_nop)
+        self.accumulator = 0
+        self.length = len(self.instructions)
+        self.current_address = 0
+        self.previous_addresses = []
+
         self.operations = {
-            'acc': self.acc_instruction,
-            'jmp': self.jmp_instruction,
-            'nop': self.nop_instruction
+            'acc': self.__do_acc__,
+            'jmp': self.__do_jmp__,
+            'nop': self.__do_nop__
         }
 
     def __update_steps__(self, amt):
-        self.address += amt
+        self.current_address += amt
 
     def __update_accumulator__(self, amt):
         self.accumulator += amt
 
-    def do_acc(self, amount):
+    def __do_acc__(self, amount):
         self.__update_steps__(1)
         self.__update_accumulator__(amount)
-        pass
- 
-    def do_jmp(self, amount):
-        self.__update_steps__(amount)
-        pass
 
-    def do_nop(self, amount):
+    def __do_jmp__(self, amount):
+        self.__update_steps__(amount)
+
+    def __do_nop__(self, amount):
         self.__update_steps__(1)
-        pass
+
+    def __get_op__(self):
+        return self.instructions[self.current_address][0]
+
+    def __get_amt__(self):
+        return self.instructions[self.current_address][1]
+
+    def __execute__(self, op, amt):
+        self.operations[op](amt)
+
+    def __can_run__(self):
+        return self.current_address < self.length
+
+    def __has_visited__(self):
+        return self.current_address in self.previous_addresses
+
+    def __mark_visited__(self):
+        self.previous_addresses.append(self.current_address)
+
+    def __failed__(self):
+        return -1, self.accumulator
+
+    def __passed__(self):
+        return 0, self.accumulator
+
+    def step(self):
+        while self.__can_run__():
+            self.__execute__(self.__get_op__(), self.__get_amt__())
+            if self.__has_visited__():
+                yield self.__failed__()
+            self.__mark_visited__()
+        yield self.__passed__()
 
     def run(self):
-        while self.address < (len(self.instructions)):
-            op = self.instructions[self.address][0]
-            amt = self.instructions[self.address][1]
-            self.operations[op].execute(amt)
-            if self.address in self.prev_addresses:
-                return -1, self.accumulator
-            self.prev_addresses.append(self.address)
-        return 0, self.accumulator
+        while self.__can_run__():
+            self.__execute__(self.__get_op__(), self.__get_amt__())
+            if self.__has_visited__():
+                return self.__failed__()
+            self.__mark_visited__()
+        return self.__passed__()
 
 
 def format_data(data):
-    instructions = [[x[:3], int(x[3:])] for x in data.read().replace('+', '').split('\n')]
-    return instructions
+    return [[x[:3], int(x[3:])] for x in data.readlines()]
 
 
-def print_data(data):
-    for d in data:
-        print(d)
+def try_swap_op(op):
+    op[0] = 'jmp' if op[0] == 'nop' else 'nop' if op[0] == 'jmp' else 'acc'
 
 
-def get_data_copy(data):
-    return deepcopy(data)
+def part_1(instructions):
+    computer = Computer(deepcopy(instructions))
+    code, amt = computer.run()
+    return f"Part 1: {amt}"
+
+
+def part_2(instructions):
+    for i in range(len(instructions)):
+        d = deepcopy(instructions)
+        try_swap_op(d[i])
+        computer = Computer(d)
+        for code, amt in computer.step():
+            if code == -1:
+                break
+            if code == 0:
+                return f"Part 2: {amt}"
 
 
 if __name__ == "__main__":
     with open("Day_08/input.txt", "r") as in_file:
         instructions = format_data(in_file)
-        d = get_data_copy(instructions)
-        try_nops = True
-        try_jmps = True
-        computer = Computer(d)
-        code, amt = computer.run()
-        if code == -1:
-            print(f"Part 1: {amt}")
-
-        # wanted to wait until a failure to edit the jmp or nop, this was easier
-        if try_jmps:
-            jmps = [i for i, x in enumerate(instructions) if x[0] == 'jmp']
-            for jmp in jmps:
-                d = get_data_copy(instructions)
-                d[jmp][0] = 'nop'
-                computer = Computer(d)
-                code, amt = computer.run()
-                if code == 0:
-                    print(f"Part 2: {amt} - jmps")
-                    try_nops = False
-        # No need for this but I thought it best to account for both posibilities
-        if try_nops:
-            nops = [i for i, x in enumerate(instructions) if x[0] == 'nop']
-            for nop in nops:
-                d = get_data_copy(instructions)
-                d[nop][0] = 'jmp'
-                computer = Computer(d)
-                code, amt = computer.run()
-                if code == 0:
-                    print(f"Part 2: {amt} - nops")
-                    try_nops = False
+        print(part_1(instructions))
+        print(part_2(instructions))
