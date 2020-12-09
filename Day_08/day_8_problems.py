@@ -1,4 +1,7 @@
+import sys
+import time
 from copy import deepcopy
+from os import system
 
 """
 --- Day 8: Handheld Halting ---
@@ -129,6 +132,10 @@ terminates?
 """
 
 
+def clear():
+    _ = system('cls')
+
+
 class Computer:
     def __init__(self, instructions):
         self.instructions = instructions
@@ -178,10 +185,13 @@ class Computer:
         self.previous_addresses.append(self.current_address)
 
     def __failed__(self):
-        return -1, self.accumulator
+        return -1, self.accumulator, self.current_address, self.accumulator
 
     def __passed__(self):
-        return 0, self.accumulator
+        return 0, self.accumulator, self.current_address, self.accumulator
+
+    def __continue__(self):
+        return 1, self.accumulator, self.current_address, self.accumulator
 
     def step(self):
         while self.__can_run__():
@@ -189,6 +199,7 @@ class Computer:
             if self.__has_visited__():
                 yield self.__failed__()
             self.__mark_visited__()
+            yield self.__continue__()
         yield self.__passed__()
 
     def run(self):
@@ -208,18 +219,76 @@ def try_swap_op(op):
     op[0] = 'jmp' if op[0] == 'nop' else 'nop' if op[0] == 'jmp' else 'acc'
 
 
+GREEN = "\033[0;32;40m"
+YELLOW = "\033[0;33;40m"
+BLUE = "\033[0;34;40m"
+RED = "\033[0;31;40m"
+END = "\033[0m"
+START = "\033[F"
+UP = "\033[A"
+
+
+JMP = f"{BLUE}{'▲'} {END}"
+NOP = f"{RED}{'■'} {END}"
+ACC = f"{GREEN}{'⬤'} {END}"
+CURRENT = f"{YELLOW}{'   '}{END}"
+
+colors = {
+    'jmp': BLUE,
+    'nop': RED,
+    'acc': GREEN
+}
+
+icons = {
+    'jmp': JMP,
+    'nop': NOP,
+    'acc': ACC
+}
+
+
+def print_data(data, address, accumulated):
+    # 591
+    sys.stdout.write(f"{START}{UP*13}")
+    s = ''
+    k = address-1
+    for i in range(0, 600, 50):
+        k = min(k+1, len(data)-1)
+        if k+1 < len(data):
+            s += f"{colors[data[k][0]]}{data[k][0]}{END}  "
+            s += f"{data[k][1]:4} {YELLOW}│{END} "
+        else:
+            s += f"{'---  0000'} {YELLOW}│{END} "
+        for j in range(i, i+50, 1):
+            if j == address:
+                s += f"{j:<3}"
+            elif j < len(data):
+                s += f"{icons[data[j][0]]} "
+            else:
+                s += f"{YELLOW}{'___'}{END}"
+        if i == 0:
+            s += f"{YELLOW}│{END} {accumulated:4}"
+        else:
+            s += f"{YELLOW}│{END}"
+        s += "\n"
+    s += f"Address: {address}\n"
+    sys.stdout.write(s)
+    sys.stdout.flush()
+    #time.sleep(.1)
+
+
 def part_1(instructions):
     computer = Computer(deepcopy(instructions))
-    code, amt = computer.run()
+    code, amt, a, ac = computer.run()
     return f"Part 1: {amt}"
 
 
 def part_2(instructions):
-    for i in range(len(instructions)):
+    for i in range(274, len(instructions)):
         d = deepcopy(instructions)
         try_swap_op(d[i])
         computer = Computer(d)
-        for code, amt in computer.step():
+        for code, amt, address, accumulated in computer.step():
+            print_data(d, address, accumulated)
             if code == -1:
                 break
             if code == 0:
@@ -227,7 +296,9 @@ def part_2(instructions):
 
 
 if __name__ == "__main__":
-    with open("Day_08/input.txt", "r") as in_file:
+    clear()
+    with open("D:\PythonFiles\AdventOfCode_2020\Day_08/input.txt", "r") as in_file:
         instructions = format_data(in_file)
-        print(part_1(instructions))
-        print(part_2(instructions))
+        P1 = part_1(instructions)
+        P2 = part_2(instructions)
+        print(f"{P1}\n{P2}")
