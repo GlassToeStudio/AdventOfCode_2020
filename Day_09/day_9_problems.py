@@ -1,3 +1,8 @@
+import sys
+import time
+from copy import deepcopy
+from os import system
+
 """
 --- Day 9: Encoding Error ---
 With your neighbor happily enjoying their video game, you turn your attention
@@ -146,11 +151,37 @@ def find_contiguous_set(numbers, target):
     while i < len(numbers)-1:
         queue.append(numbers[i])
         total = sum(queue)
+        print_search(numbers, queue, target)
         if total == target:
             return min(queue) + max(queue)
         while sum(queue) + numbers[i+1] > target and len(queue) > 1:
             queue.pop(0)
+            print_search(numbers, queue, target)
         i += 1
+
+import re
+
+
+def print_search(numbers, queue, target):
+    GREEN = "\033[0;32;40m"
+    RED = "\033[0;31;40m"
+    BLUE = "\033[0;34;40m"
+    END = "\033[0m"
+    START = "\033[F"
+    UP = "\033[A"
+    #sys.stdout.flush()
+    sys.stdout.write(f"{START}{UP*52}")
+    r = RED + ''.join(str(numbers))[1:-1]+ "," + END
+    color = END + GREEN + ''.join(str(queue))[1:-1] + RED
+    r = r.replace(''.join(str(queue))[1:-1], color)
+
+    sys.stdout.write(f"{r}\nTarget: {target:9} Total: {sum(queue):<9}  Queue Length: {len(queue):<9}  Q Min: {min(queue):<9}  Q Max: {max(queue):<9} Q Sum: {(min(queue) + max(queue)):<9}\n")
+    #sys.stdout.flush()
+    #time.sleep(.001)
+
+
+def clear():
+    _ = system('cls')
 
 
 if __name__ == "__main__":
