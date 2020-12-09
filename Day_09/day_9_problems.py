@@ -1,3 +1,4 @@
+import re
 import sys
 import time
 from copy import deepcopy
@@ -18,7 +19,8 @@ weakness.
 
 XMAS starts by transmitting a preamble of 25 numbers. After that, each number
 you receive should be the sum of any two of the 25 immediately previous
-numbers. The two numbers will have different values, and there might be more than one such pair.
+numbers. The two numbers will have different values, and there might be more
+than one such pair.
 
 For example, suppose your preamble consists of the numbers 1 through 25 in a
 random order. To be valid, the next number must be the sum of two of those
@@ -33,7 +35,8 @@ numbers:
 
 Suppose the 26th number is 45, and the first number (no longer an option, as
 it is more than 25 numbers ago) was 20. Now, for the next number to be valid,
-there needs to be some pair of numbers among 1-19, 21-25, or 45 that add up to it:
+there needs to be some pair of numbers among 1-19, 21-25, or 45 that add up to
+it:
 
     26 would still be a valid next number, as 1 and 25 are still within the
     previous 25 numbers.
@@ -119,6 +122,25 @@ What is the encryption weakness in your XMAS-encrypted list of numbers?
 """
 
 
+def clear():
+    _ = system('cls')
+
+
+def print_search(numbers, queue, target):
+    GREEN = "\033[0;32;40m"
+    RED = "\033[0;31;40m"
+    BLUE = "\033[0;34;40m"
+    END = "\033[0m"
+    START = "\033[F"
+    UP = "\033[A"
+
+    sys.stdout.write(f"{START}{UP*52}")
+    r = RED + ''.join(str(numbers))[1:-1] + "," + END
+    color = END + GREEN + ''.join(str(queue))[1:-1] + RED
+    r = r.replace(''.join(str(queue))[1:-1], color)
+    sys.stdout.write(f"{r}\nTarget: {target:9} Total: {sum(queue):<9}  Queue Length: {len(queue):<9}  Q Min: {min(queue):<9}  Q Max: {max(queue):<9} Q Sum: {(min(queue) + max(queue)):<9}\n")
+
+
 def format_data(data):
     return [int(x.strip()) for x in data.readlines()]
 
@@ -158,30 +180,6 @@ def find_contiguous_set(numbers, target):
             queue.pop(0)
             print_search(numbers, queue, target)
         i += 1
-
-import re
-
-
-def print_search(numbers, queue, target):
-    GREEN = "\033[0;32;40m"
-    RED = "\033[0;31;40m"
-    BLUE = "\033[0;34;40m"
-    END = "\033[0m"
-    START = "\033[F"
-    UP = "\033[A"
-    #sys.stdout.flush()
-    sys.stdout.write(f"{START}{UP*52}")
-    r = RED + ''.join(str(numbers))[1:-1]+ "," + END
-    color = END + GREEN + ''.join(str(queue))[1:-1] + RED
-    r = r.replace(''.join(str(queue))[1:-1], color)
-
-    sys.stdout.write(f"{r}\nTarget: {target:9} Total: {sum(queue):<9}  Queue Length: {len(queue):<9}  Q Min: {min(queue):<9}  Q Max: {max(queue):<9} Q Sum: {(min(queue) + max(queue)):<9}\n")
-    #sys.stdout.flush()
-    #time.sleep(.001)
-
-
-def clear():
-    _ = system('cls')
 
 
 if __name__ == "__main__":
