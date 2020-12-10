@@ -116,24 +116,17 @@ differences multiplied by the number of 3-jolt differences?
 """
 
 
-def in_range(joltage, input_joltage):
-    return joltage - input_joltage <= 3
-
-
 def format_data(data):
     return [int(x) for x in data.readlines()]
 
 
 def check_adapters(adapters, input_joltage):
     valid_chain = []
-    differences = {}
+    differences = {0: 0, 1: 0, 2: 0, 3: 0}
     for joltage in adapters:
-        if in_range(joltage, input_joltage):
-            diff = joltage - input_joltage
-            if diff in differences:
-                differences[diff] += 1
-            else:
-                differences[diff] = 1
+        diff = joltage - input_joltage
+        if diff <= 3:
+            differences[diff] += 1
             valid_chain.append(joltage)
             input_joltage = joltage
     return differences[1] * differences[3]
@@ -141,9 +134,7 @@ def check_adapters(adapters, input_joltage):
 
 if __name__ == "__main__":
     with open("Day_10/input.txt", "r") as in_file:
-        data = format_data(in_file)
-        joltages = data.copy()
+        joltages = format_data(in_file)
         joltages.sort()
         joltages.append(joltages[-1]+3)
-
         print(check_adapters(joltages, 0))
