@@ -46,3 +46,4 @@ src/test/get-pip.py
 .vscode/settings.json
 test-make-gif.py
 .env
+*.yml
