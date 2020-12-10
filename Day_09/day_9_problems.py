@@ -118,38 +118,42 @@ What is the encryption weakness in your XMAS-encrypted list of numbers?
 
 * 67587168
 """
+import colors as C
 
-
-GREEN = "\u001b[42m\u001b[30m\u001b[1m"
+GREEN = "\033[0;42;30;1m"
 RED = "\033[0;31;40m"
-BLUE = "\u001b[44m\u001b[30m\u001b[1m"
-YELLOW = "\u001b[43m\u001b[30m\u001b[1m"
+BLUE = "\033[37;44;1m"
+YELLOW = "\033[30;43;1m"
+
 END = "\033[0m"
 START = "\033[F"
 UP = "\033[A"
+
+PRINT = True
+
 
 def clear():
     _ = system('cls')
 
 
 def print_window_search(numbers, j, i, min_, max_, target):
+    if i <= 0 or not PRINT: return
     sys.stdout.write(f"{START}{UP*50}")
     srt = ''.join(f"{RED } {x:<9}{END}" for x in numbers[0:j])
     mid = ''.join(f"{BLUE} {x:<9}{END}" if x == min_ else f"{BLUE} {x:<9}{END}" if x == max_ else f"{GREEN} {x:<9}{END}"for x in numbers[j:i])
     end = ''.join(f"{YELLOW } {x:<9}{END}" if x == target else f"{RED } {x:<9}{END}" for x in numbers[i:620])
     r = f"{srt}{mid}{end}{END}\n"
-    sys.stdout.write(f"{r}\nTarget: {YELLOW}{target:9}{END} Total: {GREEN}{sum(numbers[j:i+1]):<9}{END} Min + Max: {BLUE}{(min_ + max_):<9}{END} Min: {BLUE}{min_:<9}{END} Max: {BLUE}{max_:<9}{END} Queue Length: {GREEN}{(i-j):<9}{END}\n")
-    #time.sleep(0.0001)
+    sys.stdout.write(f"{r}\nTarget: {YELLOW}{target:9}{END} Total: {GREEN}{sum(numbers[j:i+1]):<10}{END} Answer: {BLUE}{(min_ + max_):<9}{END} Min: {BLUE}{min_:<9}{END} Max: {BLUE}{max_:<9}{END} Queue Length: {GREEN}{(i-j):<9}{END}\n")
 
 
 def print_two_sums_search(numbers, j, i, a_, b_, target, valid):
+    if not PRINT: return
     sys.stdout.write(f"{START}{UP*50}")
     srt = ''.join(f"{RED } {x:<9}{END}" for x in numbers[0:j])
-    mid = ''.join(f"{BLUE} {x:<9}{END}" if x == numbers[a_] else f"{BLUE} {x:<9}{END}" if x == numbers[b_] else f"{GREEN} {x:<9}{END}"for x in numbers[j:i])+f"{YELLOW } {numbers[i]:<9}{END}" 
+    mid = ''.join(f"{BLUE} {x:<9}{END}" if x == a_ else f"{BLUE} {x:<9}{END}" if x == b_ else f"{GREEN} {x:<9}{END}"for x in numbers[j:i])+f"{YELLOW } {numbers[i]:<9}{END}" 
     end = ''.join(f"{RED } {x:<9}{END}" for x in numbers[i+1:620])
     r = f"{srt}{mid}{end}{END}\n"
-    sys.stdout.write(f"{r}\nTarget: {YELLOW}{target:9}{END} Total: {GREEN}{numbers[a_] + numbers[b_]:<9}{END} Answer: {target if valid else '--'} a: {BLUE}{a_:<9}{END} b: {BLUE}{b_:<9}{END} Queue Length: {GREEN}{(25):<9}{END}\n")
-    #time.sleep(0.0001)
+    sys.stdout.write(f"{r}\nTarget: {YELLOW}{target:<9}{END} Total: {GREEN if a_+b_!=target else YELLOW}{(a_ + b_):<10}{END} Answer: {BLUE}{target if valid else '--':<9}{END} a: {BLUE}{a_:<9}{END} b: {BLUE}{b_:<9}{END}\n")
 
 
 def format_data(data):
@@ -162,21 +166,20 @@ def find_value(numbers, preamble_length):
         t_index = p_index + preamble_length
         target = numbers[t_index]
         valid = False
-        for a_index in range(p_index, p_index + preamble_length):
+        for a_index in range(p_index, t_index):
+            if valid:
+                break
             a = numbers[a_index]
-            if a >= target or valid:
-                continue
-            for b_index in range(a_index, p_index + preamble_length):
-                if b_index %6 == 0:
-                    print_two_sums_search(numbers, p_index, t_index, a_index, b_index, target, valid)
+            for b_index in range(a_index, t_index):
                 b = numbers[b_index]
+                print_two_sums_search(numbers, p_index, t_index, a, b, target, valid)
                 if b >= target:
                     continue
                 if a + b == target:
                     valid = True
                     break
         if not valid:
-            print_two_sums_search(numbers, p_index, p_index + preamble_length, a_index, b_index, target, True)
+            print_two_sums_search(numbers, p_index, t_index, 0, 0, target, True)
             return target
         p_index += 1
 
@@ -185,8 +188,7 @@ def find_contiguous_set(numbers, target):
     i = j = 0
     s_total = 0
     while i < len(numbers)-1:
-        if i > 0:
-            print_window_search(numbers, j, i, min(numbers[j:i+1]), max(numbers[j:i+1]), target)
+        print_window_search(numbers, j, i, min(numbers[j:i+1]), max(numbers[j:i+1]), target)
         s_total += numbers[i]
         if s_total == target:
             return min(numbers[j:i+1]) + max(numbers[j:i+1])
