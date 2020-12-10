@@ -1,7 +1,5 @@
-import re
 import sys
 import time
-from copy import deepcopy
 from os import system
 
 """
@@ -122,68 +120,85 @@ What is the encryption weakness in your XMAS-encrypted list of numbers?
 """
 
 
+GREEN = "\u001b[42m\u001b[30m\u001b[1m"
+RED = "\033[0;31;40m"
+BLUE = "\u001b[44m\u001b[30m\u001b[1m"
+YELLOW = "\u001b[43m\u001b[30m\u001b[1m"
+END = "\033[0m"
+START = "\033[F"
+UP = "\033[A"
+
 def clear():
     _ = system('cls')
 
 
-def print_search(numbers, queue, target):
-    GREEN = "\033[0;32;40m"
-    RED = "\033[0;31;40m"
-    BLUE = "\033[0;34;40m"
-    END = "\033[0m"
-    START = "\033[F"
-    UP = "\033[A"
+def print_window_search(numbers, j, i, min_, max_, target):
+    sys.stdout.write(f"{START}{UP*50}")
+    srt = ''.join(f"{RED } {x:<9}{END}" for x in numbers[0:j])
+    mid = ''.join(f"{BLUE} {x:<9}{END}" if x == min_ else f"{BLUE} {x:<9}{END}" if x == max_ else f"{GREEN} {x:<9}{END}"for x in numbers[j:i])
+    end = ''.join(f"{YELLOW } {x:<9}{END}" if x == target else f"{RED } {x:<9}{END}" for x in numbers[i:620])
+    r = f"{srt}{mid}{end}{END}\n"
+    sys.stdout.write(f"{r}\nTarget: {YELLOW}{target:9}{END} Total: {GREEN}{sum(numbers[j:i+1]):<9}{END} Min + Max: {BLUE}{(min_ + max_):<9}{END} Min: {BLUE}{min_:<9}{END} Max: {BLUE}{max_:<9}{END} Queue Length: {GREEN}{(i-j):<9}{END}\n")
+    #time.sleep(0.0001)
 
-    sys.stdout.write(f"{START}{UP*52}")
-    r = RED + ''.join(str(numbers))[1:-1] + "," + END
-    color = END + GREEN + ''.join(str(queue))[1:-1] + RED
-    r = r.replace(''.join(str(queue))[1:-1], color)
-    sys.stdout.write(f"{r}\nTarget: {target:9} Total: {sum(queue):<9}  Queue Length: {len(queue):<9}  Q Min: {min(queue):<9}  Q Max: {max(queue):<9} Q Sum: {(min(queue) + max(queue)):<9}\n")
+
+def print_two_sums_search(numbers, j, i, a_, b_, target, valid):
+    sys.stdout.write(f"{START}{UP*50}")
+    srt = ''.join(f"{RED } {x:<9}{END}" for x in numbers[0:j])
+    mid = ''.join(f"{BLUE} {x:<9}{END}" if x == numbers[a_] else f"{BLUE} {x:<9}{END}" if x == numbers[b_] else f"{GREEN} {x:<9}{END}"for x in numbers[j:i])+f"{YELLOW } {numbers[i]:<9}{END}" 
+    end = ''.join(f"{RED } {x:<9}{END}" for x in numbers[i+1:620])
+    r = f"{srt}{mid}{end}{END}\n"
+    sys.stdout.write(f"{r}\nTarget: {YELLOW}{target:9}{END} Total: {GREEN}{numbers[a_] + numbers[b_]:<9}{END} Answer: {target if valid else '--'} a: {BLUE}{a_:<9}{END} b: {BLUE}{b_:<9}{END} Queue Length: {GREEN}{(25):<9}{END}\n")
+    #time.sleep(0.0001)
 
 
 def format_data(data):
     return [int(x.strip()) for x in data.readlines()]
 
 
-def find_value(nums, preamble_length):
+def find_value(numbers, preamble_length):
     p_index = 0
-    while p_index + preamble_length < len(nums):
+    while p_index + preamble_length < len(numbers):
         t_index = p_index + preamble_length
-        target = nums[t_index]
+        target = numbers[t_index]
         valid = False
         for a_index in range(p_index, p_index + preamble_length):
-            a = nums[a_index]
+            a = numbers[a_index]
             if a >= target or valid:
                 continue
             for b_index in range(a_index, p_index + preamble_length):
-                b = nums[b_index]
+                if b_index %6 == 0:
+                    print_two_sums_search(numbers, p_index, t_index, a_index, b_index, target, valid)
+                b = numbers[b_index]
                 if b >= target:
                     continue
                 if a + b == target:
                     valid = True
                     break
         if not valid:
+            print_two_sums_search(numbers, p_index, p_index + preamble_length, a_index, b_index, target, True)
             return target
         p_index += 1
 
 
 def find_contiguous_set(numbers, target):
-    queue = []
-    i = 0
+    i = j = 0
+    s_total = 0
     while i < len(numbers)-1:
-        queue.append(numbers[i])
-        total = sum(queue)
-        print_search(numbers, queue, target)
-        if total == target:
-            return min(queue) + max(queue)
-        while sum(queue) + numbers[i+1] > target and len(queue) > 1:
-            queue.pop(0)
-            print_search(numbers, queue, target)
+        if i > 0:
+            print_window_search(numbers, j, i, min(numbers[j:i+1]), max(numbers[j:i+1]), target)
+        s_total += numbers[i]
+        if s_total == target:
+            return min(numbers[j:i+1]) + max(numbers[j:i+1])
+        while (s_total + numbers[i+1]) > target:
+            print_window_search(numbers, j, i, min(numbers[j:i+1]), max(numbers[j:i+1]), target)
+            s_total -= numbers[j]
+            j += 1
         i += 1
 
 
 if __name__ == "__main__":
-    with open("Day_09/input.txt", "r") as in_file:
+    with open("D:/PythonFiles/AdventOfCode_2020/Day_09/input.txt", "r") as in_file:
         numbers = format_data(in_file)
         target = find_value(numbers, 25)
         weakness = find_contiguous_set(numbers, target)
