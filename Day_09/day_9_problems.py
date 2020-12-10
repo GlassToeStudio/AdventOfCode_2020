@@ -118,16 +118,17 @@ What is the encryption weakness in your XMAS-encrypted list of numbers?
 
 * 67587168
 """
-import colors as C
+
 
 GREEN = "\033[0;42;30;1m"
 RED = "\033[0;31;40m"
-BLUE = "\033[37;44;1m"
-YELLOW = "\033[30;43;1m"
+BLUE = "\033[0;37;44;1m"
+YELLOW = "\033[0;30;43;1m"
 
 END = "\033[0m"
 START = "\033[F"
 UP = "\033[A"
+HIDE = "\033[8m"
 
 PRINT = True
 
@@ -138,22 +139,22 @@ def clear():
 
 def print_window_search(numbers, j, i, min_, max_, target):
     if i <= 0 or not PRINT: return
-    sys.stdout.write(f"{START}{UP*50}")
-    srt = ''.join(f"{RED } {x:<9}{END}" for x in numbers[0:j])
-    mid = ''.join(f"{BLUE} {x:<9}{END}" if x == min_ else f"{BLUE} {x:<9}{END}" if x == max_ else f"{GREEN} {x:<9}{END}"for x in numbers[j:i])
-    end = ''.join(f"{YELLOW } {x:<9}{END}" if x == target else f"{RED } {x:<9}{END}" for x in numbers[i:620])
+    sys.stdout.write(f"{START}{UP*80}")
+    srt = ''.join(f"{RED } {x:<10}" for x in numbers[0:j])
+    mid = ''.join(f"{BLUE} {x:<10}" if x == min_ else f"{BLUE} {x:<10}" if x == max_ else f"{GREEN} {x:<10}"for x in numbers[j:i])
+    end = ''.join(f"{YELLOW } {x:<10}" if x == target else f"{RED } {x:<10}" for x in numbers[i:637])
     r = f"{srt}{mid}{end}{END}\n"
-    sys.stdout.write(f"{r}\nTarget: {YELLOW}{target:9}{END} Total: {GREEN}{sum(numbers[j:i+1]):<10}{END} Answer: {BLUE}{(min_ + max_):<9}{END} Min: {BLUE}{min_:<9}{END} Max: {BLUE}{max_:<9}{END} Queue Length: {GREEN}{(i-j):<9}{END}\n")
+    sys.stdout.write(f"{r}\nTarget: {YELLOW}{target:9}{END} Total: {GREEN}{sum(numbers[j:i+1]):<10}{END} Answer: {BLUE}{(min_ + max_):<10}{END} Min: {BLUE}{min_:<10}{END} Max: {BLUE}{max_:<10}{END} Queue Length: {GREEN}{(i-j):<10}{END}\n")
 
 
 def print_two_sums_search(numbers, j, i, a_, b_, target, valid):
     if not PRINT: return
-    sys.stdout.write(f"{START}{UP*50}")
-    srt = ''.join(f"{RED } {x:<9}{END}" for x in numbers[0:j])
-    mid = ''.join(f"{BLUE} {x:<9}{END}" if x == a_ else f"{BLUE} {x:<9}{END}" if x == b_ else f"{GREEN} {x:<9}{END}"for x in numbers[j:i])+f"{YELLOW } {numbers[i]:<9}{END}" 
-    end = ''.join(f"{RED } {x:<9}{END}" for x in numbers[i+1:620])
+    sys.stdout.write(f"{HIDE}{START}{UP*80}")
+    srt = ''.join(f"{RED } {x:<10}" for x in numbers[0:j])
+    mid = ''.join(f"{BLUE} {x:<10}" if x == a_ else f"{BLUE} {x:<10}" if x == b_ else f"{GREEN} {x:<10}"for x in numbers[j:i])+f"{YELLOW } {numbers[i]:<10}"
+    end = ''.join(f"{RED } {x:<10}" for x in numbers[i+1:637])
     r = f"{srt}{mid}{end}{END}\n"
-    sys.stdout.write(f"{r}\nTarget: {YELLOW}{target:<9}{END} Total: {GREEN if a_+b_!=target else YELLOW}{(a_ + b_):<10}{END} Answer: {BLUE}{target if valid else '--':<9}{END} a: {BLUE}{a_:<9}{END} b: {BLUE}{b_:<9}{END}\n")
+    sys.stdout.write(f"{r}\nTarget: {YELLOW}{target:<10}{END} Total: {GREEN if a_+b_!=target else YELLOW}{(a_ + b_):<10}{END} Answer: {BLUE}{target if valid else '--':<10}{END} a: {BLUE}{a_:<10}{END} b: {BLUE}{b_:<10}{END}{HIDE}\n")
 
 
 def format_data(data):
@@ -172,7 +173,8 @@ def find_value(numbers, preamble_length):
             a = numbers[a_index]
             for b_index in range(a_index, t_index):
                 b = numbers[b_index]
-                print_two_sums_search(numbers, p_index, t_index, a, b, target, valid)
+                if b % 10 == 0 and p_index > 0:
+                    print_two_sums_search(numbers, p_index, t_index, a, b, target, valid)
                 if b >= target:
                     continue
                 if a + b == target:
@@ -206,3 +208,4 @@ if __name__ == "__main__":
         weakness = find_contiguous_set(numbers, target)
         print(f"Part 1: {target}")
         print(f"Part 2: {weakness}")
+        print(END)
