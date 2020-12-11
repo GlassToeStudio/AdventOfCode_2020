@@ -268,8 +268,25 @@ Day 9 - Window search
 
 ### Visusal
 <p align="center">
-<img src="https://github.com/GlassToeStudio/AdventOfCode_2020/blob/master/Day_09/AoC_day9_vis.gif" width="100%" height="100%"
+<img src="https://github.com/GlassToeStudio/AdventOfCode_2020/blob/master/Day_09/day_09_part_1_2_square.gif" width="100%" height="100%"
 </p>
+
+
+</p>
+</details>
+
+
+<details>
+<summary><b>Day 10: Encoding Error</b></summary>
+<p>
+Day 10 - Dynamic Programming (apparently).
+
+```
+```
+
+### Part 1:
+
+### Part 2:
 
 
 </p>
