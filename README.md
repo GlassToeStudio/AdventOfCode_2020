@@ -291,3 +291,20 @@ Day 10 - Dynamic Programming (apparently).
 
 </p>
 </details>
+
+
+<details>
+<summary><b>Day 11: Seating System</b></summary>
+<p>
+Day 11 - Conways Game of Life... ish
+
+```
+```
+
+### Part 1:
+
+### Part 2:
+
+
+</p>
+</details>
