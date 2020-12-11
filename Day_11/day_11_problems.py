@@ -110,8 +110,226 @@ moving around, you count 37 occupied seats.
 Simulate your seating area by applying the seating rules repeatedly until no
 seats change state. How many seats end up occupied?
 
-To begin, get your puzzle input.
+* 2354
 """
+
+
+"""
+--- Part Two ---
+As soon as people start to arrive, you realize your mistake. People don't just
+care about adjacent seats - they care about the first seat they can see in
+each of those eight directions!
+
+Now, instead of considering just the eight immediately adjacent seats,
+consider the first seat in each of those eight directions. For example, the
+empty seat below would see eight occupied seats:
+
+    .......#.
+    ...#.....
+    .#.......
+    .........
+    ..#L....#
+    ....#....
+    .........
+    #........
+    ...#.....
+
+The leftmost empty seat below would only see one empty seat, but cannot see
+any of the occupied ones:
+
+    .............
+    .L.L.#.#.#.#.
+    .............
+
+The empty seat below would see no occupied seats:
+
+    .##.##.
+    #.#.#.#
+    ##...##
+    ...L...
+    ##...##
+    #.#.#.#
+    .##.##.
+
+Also, people seem to be more tolerant than you expected: it now takes five or
+more visible occupied seats for an occupied seat to become empty (rather than
+four or more from the previous rules). The other rules still apply: empty
+seats that see no occupied seats become occupied, seats matching no rule
+don't change, and floor never changes.
+
+Given the same starting layout as above, these new rules cause the seating
+area to shift around as follows:
+
+    L.LL.LL.LL
+    LLLLLLL.LL
+    L.L.L..L..
+    LLLL.LL.LL
+    L.LL.LL.LL
+    L.LLLLL.LL
+    ..L.L.....
+    LLLLLLLLLL
+    L.LLLLLL.L
+    L.LLLLL.LL
+
+    #.##.##.##
+    #######.##
+    #.#.#..#..
+    ####.##.##
+    #.##.##.##
+    #.#####.##
+    ..#.#.....
+    ##########
+    #.######.#
+    #.#####.##
+
+    #.LL.LL.L#
+    #LLLLLL.LL
+    L.L.L..L..
+    LLLL.LL.LL
+    L.LL.LL.LL
+    L.LLLLL.LL
+    ..L.L.....
+    LLLLLLLLL#
+    #.LLLLLL.L
+    #.LLLLL.L#
+
+    #.L#.##.L#
+    #L#####.LL
+    L.#.#..#..
+    ##L#.##.##
+    #.##.#L.##
+    #.#####.#L
+    ..#.#.....
+    LLL####LL#
+    #.L#####.L
+    #.L####.L#
+
+    #.L#.L#.L#
+    #LLLLLL.LL
+    L.L.L..#..
+    ##LL.LL.L#
+    L.LL.LL.L#
+    #.LLLLL.LL
+    ..L.L.....
+    LLLLLLLLL#
+    #.LLLLL#.L
+    #.L#LL#.L#
+
+    #.L#.L#.L#
+    #LLLLLL.LL
+    L.L.L..#..
+    ##L#.#L.L#
+    L.L#.#L.L#
+    #.L####.LL
+    ..#.#.....
+    LLL###LLL#
+    #.LLLLL#.L
+    #.L#LL#.L#
+
+    #.L#.L#.L#
+    #LLLLLL.LL
+    L.L.L..#..
+    ##L#.#L.L#
+    L.L#.LL.L#
+    #.LLLL#.LL
+    ..#.L.....
+    LLL###LLL#
+    #.LLLLL#.L
+    #.L#LL#.L#
+
+Again, at this point, people stop shifting around and the seating area reaches
+equilibrium. Once this occurs, you count 26 occupied seats.
+
+Given the new visibility method and the rule change for occupied seats
+becoming empty, once equilibrium is reached, how many seats end up occupied?
+
+Your puzzle answer was 2072.
+"""
+
+
+def check_north(previous_cycle, rows, cols,  r, c):
+    if r-1 >= 0:
+        if previous_cycle[r-1][c] == '.':
+            return check_north(previous_cycle, rows, cols, r-1, c)
+        elif previous_cycle[r-1][c] == "#":
+            return 1
+    return 0
+
+
+def check_south(previous_cycle, rows, cols,  r, c):
+    if r+1 < rows:
+        if previous_cycle[r+1][c] == '.':
+            return check_south(previous_cycle, rows, cols, r+1, c)
+        elif previous_cycle[r+1][c] == "#":
+            return 1
+    return 0
+
+
+def check_left(previous_cycle, rows, cols,  r, c):
+    if c-1 >= 0:
+        if previous_cycle[r][c-1] == '.':
+            return check_left(previous_cycle, rows, cols, r, c-1)
+        elif previous_cycle[r][c-1] == "#":
+            return 1
+    return 0
+
+
+def check_right(previous_cycle, rows, cols,  r, c):
+    if c+1 < cols:
+        if previous_cycle[r][c+1] == '.':
+            return check_right(previous_cycle, rows, cols, r, c+1)
+        elif previous_cycle[r][c+1] == "#":
+            return 1
+    return 0
+
+
+def check_l_north(previous_cycle, rows, cols,  r, c):
+    if r-1 >= 0 and c-1 >= 0:
+        if previous_cycle[r-1][c-1] == '.':
+            return check_l_north(previous_cycle, rows, cols, r-1, c-1)
+        elif previous_cycle[r-1][c-1] == "#":
+            return 1
+    return 0
+
+
+def check_r_north(previous_cycle, rows, cols,  r, c):
+    if r-1 >= 0 and c+1 < cols:
+        if previous_cycle[r-1][c+1] == '.':
+            return check_r_north(previous_cycle, rows, cols, r-1, c+1)
+        elif previous_cycle[r-1][c+1] == "#":
+            return 1
+
+    return 0
+
+
+def check_l_south(previous_cycle, rows, cols,  r, c):
+    if r+1 < rows and c-1 >= 0:
+        if previous_cycle[r+1][c-1] == '.':
+            return check_l_south(previous_cycle, rows, cols, r+1, c-1)
+        elif previous_cycle[r+1][c-1] == "#":
+            return 1
+    return 0
+
+
+def check_r_south(previous_cycle, rows, cols,  r, c):
+    if r+1 < rows and c+1 < cols:
+        if previous_cycle[r+1][c+1] == '.':
+            return check_r_south(previous_cycle, rows, cols, r+1, c+1)
+        elif previous_cycle[r+1][c+1] == "#":
+            return 1
+    return 0
+
+
+directions = {
+    (-1, 0): check_north,
+    (1, 0): check_south,
+    (0, -1): check_left,
+    (0, +1): check_right,
+    (-1, -1): check_l_north,
+    (-1, 1): check_r_north,
+    (1, -1): check_l_south,
+    (1, 1): check_r_south,
+}
 
 
 def clear():
@@ -120,13 +338,13 @@ def clear():
 
 STATS = {
     'intial_occupied': 0,
-    'new_occupied': 0,
+    'occupied': 0,
     'moved': 0,
     'Cycles': 0,
     'all_empty': False,
     'all_occupied': False,
-    'cycle_new_occupied': 0,
-    'cycle_moved': 0,
+    'cycle_occupied': 1,
+    'cycle_moved': 1,
     'total_occupied': 0
     }
 
@@ -147,7 +365,7 @@ def format_data(data):
 def next_life_cycle_iteration(previous_cycle, current_cycle):
     STATS['all_empty'] = True
     STATS['all_occupied'] = True
-    STATS['cycle_births'] = 0
+    STATS['cycle_occupied'] = 0
     STATS['cycle_moved'] = 0
     STATS['total_occupied'] = 0
 
@@ -160,7 +378,7 @@ def next_life_cycle_iteration(previous_cycle, current_cycle):
             check_seat_rules(previous_cycle, current_cycle, row, col, live_neighbors)
 
     STATS['moved'] += STATS['cycle_moved']
-    STATS['new_occupied'] += STATS['cycle_births']
+    STATS['occupied'] += STATS['cycle_occupied']
     save_previous_cycle_iteration(current_cycle, previous_cycle)
     return
 
@@ -176,9 +394,11 @@ def count_neighbors(previous_cycle, r, c):
     for row in range((r - 1), (r + 2)):
         for col in range((c - 1), (c + 2)):
             if row != r or col != c:  # Dont count yourself as a neighbor.
-                if (row < rows and row >= 0 and col < columns and col >= 0
-                        and previous_cycle[row][col] == occupied):
-                    total_neighbors += 1
+                if row < rows and row >= 0 and col < columns and col >= 0:
+                    if previous_cycle[row][col] == occupied:
+                        total_neighbors += 1
+                    elif previous_cycle[row][col] == '.':
+                        total_neighbors += directions[(row - r, col - c)](previous_cycle, rows, columns, row, col)
 
     return total_neighbors
 
@@ -197,14 +417,14 @@ def check_seat_rules(previous_cycle, current_cycle, row, column, occupied_neighb
 
     # rules for occupied seats
     if previous_cycle[row][column] == occupied:
-        if occupied_neighbors >= 4:
+        if occupied_neighbors >= 5:
             current_cycle[row][column] = empty_seat
             STATS['all_occupied'] = False
             STATS['cycle_moved'] += 1
-            STATS['total_occupied'] += 1
         else:
             current_cycle[row][column] = occupied
             STATS['total_occupied'] += 1
+            STATS['cycle_occupied'] += 1
             STATS['all_empty'] = False
     # rules for empty seats
     elif previous_cycle[row][column] == empty_seat:
@@ -213,7 +433,7 @@ def check_seat_rules(previous_cycle, current_cycle, row, column, occupied_neighb
             STATS['total_occupied'] += 1
             STATS['all_empty'] = False
             STATS['all_occupied'] = False
-            STATS['cycle_births'] += 1
+            STATS['cycle_occupied'] += 1
         else:
             current_cycle[row][column] = empty_seat
     else:
@@ -233,7 +453,7 @@ def save_previous_cycle_iteration(from_board, to_board):
 
 def all_empty(current_cycle_data, current_loop):
     # format_and_print_output(current_cycle_data)
-    print("\n\tEveryone died after: {} iterations".format(current_loop))
+    print("\n\tNoone left after: {} iterations".format(current_loop))
 
 
 def noone_moved(current_cycle_data, current_loop):
@@ -253,14 +473,14 @@ def format_and_print_output(board):
         if row == 1:
             output += '\t|  --------------\n'
         elif row == 2:
-            output += '\t|  New new_occupied: {}\n'.format(STATS['cycle_births'])
+            output += '\t|  New occupied: {}\n'.format(STATS['cycle_occupied'])
         elif row == 4:
             output += '\t|  New moved: {}\n'.format(STATS['cycle_moved'])
         elif row == 5:
             output += '\t|  --------------\n'
         else:
             output += '\t|\n'
-        output += (f"Total occupied {STATS['total_occupied']}\n")
+    output += (f"Total occupied {STATS['total_occupied']}\n")
     print(output)
     return
 
@@ -269,12 +489,11 @@ if __name__ == "__main__":
     with open("Day_11/input.txt", "r") as in_file:
         current_cycle_data, rows, columns = format_data(in_file)
         current_loop = 0
-        loops = 1000
         previous_cycle_data = [['.' for i in range(columns)] for j in range(rows)]
         save_previous_cycle_iteration(current_cycle_data, previous_cycle_data)
 
         # Begin simulation loop
-        while current_loop <= loops:
+        while STATS['cycle_occupied'] + STATS['cycle_moved'] > 0:
             if STATS['all_empty'] is True:
                 all_empty(current_cycle_data, current_loop)
                 break
@@ -282,6 +501,7 @@ if __name__ == "__main__":
                 noone_moved(current_cycle_data, current_loop)
                 break
 
+            # clear()
             # format_and_print_output(current_cycle_data)
 
             next_life_cycle_iteration(previous_cycle_data, current_cycle_data)
