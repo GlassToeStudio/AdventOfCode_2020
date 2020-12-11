@@ -277,7 +277,7 @@ Day 9 - Window search
 
 
 <details>
-<summary><b>Day 10: Encoding Error</b></summary>
+<summary><b>Day 10: Adapter Array</b></summary>
 <p>
 Day 10 - Dynamic Programming (apparently).
 
