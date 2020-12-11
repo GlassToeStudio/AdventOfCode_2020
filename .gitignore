@@ -47,3 +47,4 @@ src/test/get-pip.py
 test-make-gif.py
 .env
 *.yml
+render[0-9]*
