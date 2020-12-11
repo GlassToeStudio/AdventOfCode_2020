@@ -193,10 +193,10 @@ def format_data(data):
 
 
 def check_adapters(adapters):
-    differences = {0: 0, 1: 0, 2: 0, 3: 0}
+    differences = {1: 0, 3: 0}
     for i in range(1, len(adapters)):
         diff = adapters[i] - adapters[i-1]
-        if diff <= 3:
+        if diff == 1 or 3:
             differences[diff] += 1
             input_joltage = adapters[i]
     return differences[1] * differences[3]
