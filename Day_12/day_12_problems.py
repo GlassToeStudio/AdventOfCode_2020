@@ -53,6 +53,64 @@ its starting position is 17 + 8 = 25.
 
 Figure out where the navigation instructions lead. What is the Manhattan
 distance between that location and the ship's starting position?
+
+* 1424
+"""
+
+
+"""
+--- Part Two ---
+Before you can give the destination to the captain, you realize that the
+actual action meanings were printed on the back of the instructions the whole
+time.
+
+Almost all of the actions indicate how to move a waypoint which is relative to
+the ship's position:
+
+    Action N means to move the waypoint north by the given value.
+    Action S means to move the waypoint south by the given value.
+    Action E means to move the waypoint east by the given value.
+    Action W means to move the waypoint west by the given value.
+    Action L means to rotate the waypoint around the ship left
+    (counter-clockwise)
+    the given number of degrees.
+    Action R means to rotate the waypoint around the ship right (clockwise) the
+    given number of degrees.
+    Action F means to move forward to the waypoint a number of times equal to
+    the
+    given value.
+
+The waypoint starts 10 units east and 1 unit north relative to the ship. The
+waypoint is relative to the ship; that is, if the ship moves, the waypoint
+moves with it.
+For example, using the same instructions as above:
+
+    F10 moves the ship to the waypoint 10 times (a total of 100 units east and
+    10
+    units north), leaving the ship at east 100, north 10. The waypoint stays
+    10 units east and 1 unit north of the ship.
+    N3 moves the waypoint 3 units north to 10 units east and 4 units north of
+    the
+    ship. The ship remains at east 100, north 10.
+    F7 moves the ship to the waypoint 7 times (a total of 70 units east and 28
+    units north), leaving the ship at east 170, north 38. The waypoint stays
+    10 units east and 4 units north of the ship.
+    R90 rotates the waypoint around the ship clockwise 90 degrees, moving it
+    to 4
+    units east and 10 units south of the ship. The ship remains at east 170,
+    north 38.
+    F11 moves the ship to the waypoint 11 times (a total of 44 units east and
+    110
+    units south), leaving the ship at east 214, south 72. The waypoint stays 4
+    units east and 10 units south of the ship.
+
+After these operations, the ship's Manhattan distance from its starting
+position is 214 + 72 = 286.
+
+Figure out where the navigation instructions actually lead. What is the
+Manhattan distance between that location and the ship's starting position?
+
+* 63447
 """
 
 
@@ -60,18 +118,41 @@ def format_data(data):
     return [x.strip() for x in data.readlines()]
 
 
-def turn(direction, amount, coord):
+def turn1(direction, amount, coord):
     info[2] += amount//90 * 1 if direction == 'R' else amount//90 * 3
-    info[2] = info[2]% 4
+    info[2] = info[2] % 4
 
 
-def forward(direction, amount, coord):
-    navigate(dirs[info[2]], amount, navigation[dirs[info[2]]][1])
+def turn2(direction, amount, coord):
+    x = info[3]
+    y = info[4]
+    if direction == 'L':
+        for i in range(amount//90):
+            x, y = -y, x
+    else:
+        for i in range(amount//90):
+            x, y = y, -x
+    info[3] = x
+    info[4] = y
 
 
-def navigate(direction, amount, coord):
+def forward1(direction, amount, coord):
+    navigate1(dirs[info[2]], amount, navigation[dirs[info[2]]][1])
+
+
+def forward2(direction, amount, coord):
+    info[0] += amount * info[3]
+    info[1] += amount * info[4]
+
+
+def navigate1(direction, amount, coord):
     info[0] += coord[0]*amount
     info[1] += coord[1]*amount
+
+
+def navigate2(direction, amount, coord):
+    info[3] += coord[0] * amount
+    info[4] += coord[1] * amount
 
 
 def solve(instructions):
@@ -82,21 +163,32 @@ def solve(instructions):
 
 
 dirs = ['N', 'E', 'S', 'W']
+info = [0, 0, 1]
 navigation = {
-    'N': [navigate, (0, 1)],
-    'E': [navigate, (1, 0)],
-    'S': [navigate, (0, -1)],
-    'W': [navigate, (-1, 0)],
-    'L': [turn, None],
-    'R': [turn, None],
-    'F': [forward, None]
+    'N': [navigate1, (0, 1)],
+    'E': [navigate1, (1, 0)],
+    'S': [navigate1, (0, -1)],
+    'W': [navigate1, (-1, 0)],
+    'L': [turn1, (None, None)],
+    'R': [turn1, (None, None)],
+    'F': [forward1, (None, None)]
 }
 
-
-info = [0, 0, 1]
 
 if __name__ == "__main__":
     with open("Day_12/input.txt", "r") as in_file:
         data = format_data(in_file)
+        solve(data)
+        print(abs(info[0]) + abs(info[1]))
+        info = [0, 0, 1, 10, 1]
+        navigation = {
+            'N': [navigate2, (0, 1)],
+            'E': [navigate2, (1, 0)],
+            'S': [navigate2, (0, -1)],
+            'W': [navigate2, (-1, 0)],
+            'L': [turn2, (None, None)],
+            'R': [turn2, (None, None)],
+            'F': [forward2, (None, None)]
+        }
         solve(data)
         print(abs(info[0]) + abs(info[1]))
